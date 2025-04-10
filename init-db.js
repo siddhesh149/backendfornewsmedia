@@ -10,7 +10,7 @@ const createTables = `
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     slug VARCHAR(100) NOT NULL UNIQUE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
   );
 
   CREATE TABLE IF NOT EXISTS articles (
@@ -23,9 +23,9 @@ const createTables = `
     category_id INTEGER REFERENCES categories(id),
     featured BOOLEAN DEFAULT false,
     view_count INTEGER DEFAULT 0,
-    published_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    published_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
   );
 `;
 
@@ -56,7 +56,7 @@ Medical professionals worldwide are adopting these technologies, marking a new e
    'https://images.unsplash.com/photo-1576091160550-2173dba999ef', 
    (SELECT id FROM categories WHERE slug = 'health'), 
    true, 
-   NOW()),
+   CURRENT_TIMESTAMP),
 
   ('Global Climate Summit Reaches Historic Agreement', 
    'climate-summit-agreement-2024', 
@@ -74,7 +74,7 @@ Environmental experts call this a turning point in the fight against climate cha
    'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05', 
    (SELECT id FROM categories WHERE slug = 'politics'), 
    true, 
-   NOW() - INTERVAL '1 day'),
+   CURRENT_TIMESTAMP - INTERVAL '1 day'),
 
   ('Tech Giants Launch Revolutionary Quantum Computing Platform', 
    'quantum-computing-platform-launch', 
@@ -92,7 +92,7 @@ This development marks a significant step toward practical quantum computing app
    'https://images.unsplash.com/photo-1518770660439-4636190af475', 
    (SELECT id FROM categories WHERE slug = 'technology'), 
    true, 
-   NOW() - INTERVAL '2 days'),
+   CURRENT_TIMESTAMP - INTERVAL '2 days'),
 
   ('Asian Games 2024: Record-Breaking Performances', 
    'asian-games-2024-highlights', 
@@ -110,7 +110,7 @@ The games have showcased the rising standard of Asian athletics.',
    'https://images.unsplash.com/photo-1461896836934-ffe607ba8211', 
    (SELECT id FROM categories WHERE slug = 'sports'), 
    false, 
-   NOW() - INTERVAL '3 days'),
+   CURRENT_TIMESTAMP - INTERVAL '3 days'),
 
   ('Global Markets Rally as Tech Sector Soars', 
    'global-markets-tech-rally-2024', 
@@ -128,7 +128,7 @@ Analysts predict sustained growth through 2024.',
    'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3', 
    (SELECT id FROM categories WHERE slug = 'business'), 
    false, 
-   NOW() - INTERVAL '4 days'),
+   CURRENT_TIMESTAMP - INTERVAL '4 days'),
 
   ('Streaming Revolution: New Era of Entertainment', 
    'streaming-entertainment-revolution', 
@@ -146,7 +146,7 @@ These changes are reshaping how audiences consume media worldwide.',
    'https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37', 
    (SELECT id FROM categories WHERE slug = 'entertainment'), 
    false, 
-   NOW() - INTERVAL '5 days')
+   CURRENT_TIMESTAMP - INTERVAL '5 days')
 `;
 
 async function initializeDatabase() {
