@@ -141,6 +141,71 @@ app.use((err, req, res, next) => {
   });
 });
 
+// Database initialization function
+async function initializeDatabase() {
+  const createTables = `
+    CREATE TABLE IF NOT EXISTS categories (
+      id SERIAL PRIMARY KEY,
+      name VARCHAR(100) NOT NULL,
+      slug VARCHAR(100) NOT NULL UNIQUE,
+      created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS articles (
+      id SERIAL PRIMARY KEY,
+      title VARCHAR(255) NOT NULL,
+      slug VARCHAR(255) NOT NULL UNIQUE,
+      content TEXT NOT NULL,
+      summary TEXT,
+      image_url TEXT,
+      category_id INTEGER REFERENCES categories(id),
+      featured BOOLEAN DEFAULT false,
+      view_count INTEGER DEFAULT 0,
+      published_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+      created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+    );
+  `;
+
+  try {
+    // Create tables
+    await pool.query(createTables);
+    console.log('Tables created successfully');
+
+    // Check if categories table is empty
+    const categoriesResult = await pool.query('SELECT COUNT(*) FROM categories');
+    if (parseInt(categoriesResult.rows[0].count) === 0) {
+      // Insert sample data
+      const insertSampleData = `
+        INSERT INTO categories (name, slug) VALUES
+        ('Politics', 'politics'),
+        ('Technology', 'technology'),
+        ('Sports', 'sports'),
+        ('Business', 'business'),
+        ('Entertainment', 'entertainment'),
+        ('Health', 'health');
+
+        INSERT INTO articles (title, slug, content, summary, image_url, category_id, featured, published_at) 
+        VALUES (
+          'Tech Innovation 2024', 
+          'tech-innovation-2024',
+          'Latest technology innovations in 2024 are reshaping our world. From AI breakthroughs to quantum computing advancements, the tech landscape is evolving rapidly.',
+          'Exploring the latest technology trends and innovations of 2024',
+          'https://images.unsplash.com/photo-1518770660439-4636190af475',
+          (SELECT id FROM categories WHERE slug = 'technology'),
+          true,
+          CURRENT_TIMESTAMP
+        );
+      `;
+      await pool.query(insertSampleData);
+      console.log('Sample data inserted successfully');
+    }
+  } catch (error) {
+    console.error('Error initializing database:', error);
+    throw error; // Rethrow to handle in the calling function
+  }
+}
+
 // Start server with database initialization
 async function startServer() {
   try {
