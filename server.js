@@ -22,9 +22,8 @@ pool.query('SELECT NOW()', (err, res) => {
 
 // CORS configuration - Allow all origins in development
 app.use(cors({
-  origin: '*',
-  methods: ['GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  origin: ['http://localhost:3000', 'http://localhost:5173', 'https://frontendfornewsmedia.vercel.app'],
+  credentials: true
 }));
 
 app.use(express.json());
