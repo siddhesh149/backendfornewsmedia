@@ -87,6 +87,10 @@ async function initializeDatabase() {
 }
 
 // Routes
+app.get('/', (req, res) => {
+  res.json({ message: 'News API Server is running' });
+});
+
 app.get('/api/articles', async (req, res) => {
   try {
     const result = await pool.query(`
@@ -141,7 +145,7 @@ app.delete('/api/articles/:slug', async (req, res) => {
 
 app.get('/api/categories', async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM categories');
+    const result = await pool.query('SELECT * FROM categories ORDER BY name');
     res.json(result.rows);
   } catch (error) {
     console.error('Error fetching categories:', error);
